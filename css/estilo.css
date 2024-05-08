@@ -2,6 +2,9 @@
 
 .mascara {backdrop-filter: blur(0px);background: rgba(13, 12, 13, 0.4)}
 
+.max {
+    max-width: 720px;
+}
 
 .form-control-dark {
     border-color: var(--bs-gray);
