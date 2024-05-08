@@ -3,6 +3,14 @@
 .mascara {backdrop-filter: blur(0px);background: rgba(13, 12, 13, 0.4)}
 
 
+body {
+  --logo: url(img/logo-negro.png) no-repeat;
+}
+
+body[data-theme="dark"] {
+  --logo: url(img/logo-blanco.png) no-repeat;
+}
+
 .form-control-dark {
     border-color: var(--bs-gray);
   }
