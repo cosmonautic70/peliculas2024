@@ -46,3 +46,7 @@
   .bd-mode-toggle .dropdown-menu .active .bi {
     display: block !important;
   }
+.ftdirector {max-width: 90%;}
+.bd-black {
+  background-color: #000;
+}
