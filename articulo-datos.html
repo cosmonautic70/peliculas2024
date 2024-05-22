@@ -37,21 +37,85 @@
         var idpelicula = getUrlParameter('id');
       
         const apiKey = '45082c7b0f792bc71f372fbce1b42c61';
-        const url = `https://api.themoviedb.org/3/movie/${idpelicula}?api_key=${apiKey}&language=es-ES`;
+        const url = `https://api.themoviedb.org/3/movie/${idpelicula}?api_key=${apiKey}&language=es-ES&append_to_response=credits`;
       
           $.getJSON(url, function(data) {
               
                $(".titulo").html(data.title);
 
-              console.log(url);
-
+              
               $(".descripcion").html(data.overview);
               foto = "https://image.tmdb.org/t/p/original"+data.backdrop_path
               $(".principal").attr('src', foto);
+
+              $(".actor1").html(data.credits.cast[0].name);
+              $(".txtactor1").html(data.credits.cast[0].character);
+              $(".foto1").attr('src', "https://image.tmdb.org/t/p/original"+data.credits.cast[0].profile_path);
+
+              $(".actor2").html(data.credits.cast[1].name);
+              $(".txtactor2").html(data.credits.cast[1].character);  
+              $(".foto2").attr('src', "https://image.tmdb.org/t/p/original"+data.credits.cast[1].profile_path);                          
+
+              $(".actor3").html(data.credits.cast[2].name);
+              $(".txtactor3").html(data.credits.cast[2].character);                       
+              $(".foto3").attr('src', "https://image.tmdb.org/t/p/original"+data.credits.cast[2].profile_path);         
+
+              var actores=""
+              let n=3;
+              while (n < 20) {
+              n++;
+              actores = actores+data.credits.cast[n].name;
+              actores = actores+", ";
+              }
+              $(".elenco").html(actores);  
               
               
-          });
+              // obtener el id del director de la película
+	            const director = data.credits.crew.find(member => member.department === "Directing" && member.job === "Director");
+	            // mostrar el nombre del director en la página
+
+
+              $(".director").html(director.name);  
+              $(".ftdirector").attr('src', "https://image.tmdb.org/t/p/original"+director.profile_path);
+              const iDdirector = director.id
+
+              const biodirector =`https://api.themoviedb.org/3/person/${iDdirector}?api_key=${apiKey}&language=es-es`;
+
+              $.getJSON(biodirector, function(datos) {
+
+              $(".txtdirector").html(datos.biography);  
+
+              });
+
+
+              $(".fecha").html(data.release_date.substring(0, 4));
+                  
+              $(".votacion").html(data.vote_average+"/10");   
+              
+              
+              const total = new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+              }).format(data.revenue)
+              
+              $(".recaudacion").html(total);
+
+              });
       
+              const urlvideo = `https://api.themoviedb.org/3/movie/${idpelicula}/videos?api_key=${apiKey}&language=es`;
+
+              $.getJSON(urlvideo, function(lista) {
+
+                video = "https://www.youtube.com/embed/"+lista.results[0].key
+                $(".trailer").attr('src', video);
+
+              });
+
+
+
+
+              
+
       </script>
 
 
@@ -174,7 +238,7 @@
 	<div class="card text-bg-dark">
             <img class="card-img principal" alt="...">
             <div class="card-img-overlay d-flex flex-column mascara">
-                <div class="mt-auto">
+                <div class="mt-auto p-3">
                    <h1 class="card-title sombra titulo"></h1>
                    <p class="card-text sombra descripcion"></p>
                </div>
@@ -186,77 +250,60 @@
   <!-- actores -->
 
   <section id="actores">
-    <div class="container max">
+    <div class="container mt-5 max">
 
       <h2 class="text-center">Reparto</h2>
 
       <div class="row row-cols-1 row-cols-md-3 g-4">
   <div class="col">
     <div class="card">
-      <img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/xndWFsBlClOJFRdhSt4NBwiPq2o.jpg" class="card-img-top" alt="Tom Hanks">
+      <img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/xndWFsBlClOJFRdhSt4NBwiPq2o.jpg" class="card-img-top foto1" alt="Tom Hanks">
       <div class="card-body">
-        <h5 class="card-title">Tom Hanks</h5>
-        <p class="card-text">Captain John H. Miller</p>
+        <h5 class="card-title actor1">Tom Hanks</h5>
+        <p class="card-text txtactor1">Captain John H. Miller</p>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card">
-      <img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/cXikL7I0e2geGVvcM2RT8gQq3Nb.jpg" class="card-img-top" alt="Tom Sizemore">
+      <img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/cXikL7I0e2geGVvcM2RT8gQq3Nb.jpg" class="card-img-top foto2" alt="Tom Sizemore">
       <div class="card-body">
-        <h5 class="card-title">Tom Sizemore</h5>
-        <p class="card-text">Technical Sergeant Michael Horvath</p>
+        <h5 class="card-title actor2">Tom Sizemore</h5>
+        <p class="card-text txtactor2">Technical Sergeant Michael Horvath</p>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card">
-      <img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/i68I0bNcNd9i88cMQYQvKxX3gBr.jpg" class="card-img-top" alt="Edward Burns">
+      <img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/i68I0bNcNd9i88cMQYQvKxX3gBr.jpg" class="card-img-top foto3" alt="Edward Burns">
       <div class="card-body">
-        <h5 class="card-title">Edward Burns</h5>
-        <p class="card-text">Private Richard Reiben</p>
+        <h5 class="card-title actor3">Edward Burns</h5>
+        <p class="card-text txtactor3">Private Richard Reiben</p>
       </div>
     </div>
   </div>
 </div>
 
-<p class="mt-3">Matt Damon, Barry Pepper, Giovanni Ribisi, Adam Goldberg, Jeremy Davies, Vin Diesel, Ted Danson, Paul Giamatti, Max Martini, Dennis Farina, Harrison Young, Kathleen Byron, Harve Presnell, Dale Dye, Leland Orser, Bryan Cranston, Nathan Fillion, Ryan Hurst, Corey Johnson, Andrew Scott, Joerg Stadler, Dylan Bruno, Rolf Saxon</p>
+<p class="mt-3 elenco"></p>
 
     </div>
   </section>
 
-
-  <!-- sinopsis -->
-<section id="sinopsis">
-
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col">
-        <img src="https://www.themoviedb.org/t/p/original/q8a7vGDNCvFYaj2K7hCCMhxCRo5.jpg" alt="Sinopsis" class="img-fluid">
-      </div>
-
-      <div class="col">
-        <h3>Sinopsis</h3>
-        <p>Segunda Guerra Mundial, 1944. Tras el desembarco de los Aliados en Normandía, a un grupo de soldados americanos se le encomienda una peligrosa misión: poner a salvo al soldado James Ryan. Los hombres de la patrulla del capitán John Miller deben arriesgar sus vidas para encontrar a este soldado, cuyos tres hermanos han muerto en la guerra. Lo único que se sabe del soldado Ryan es que se lanzó con su escuadrón de paracaidistas detrás de las líneas enemigas. (FILMAFFINITY)</p>
-      </div>
-
-    </div>
-  </div>
-
-</section>
 
 
 <!-- director -->
 
 <section id="director">
 
-  <div class="container mt-5">
+  <div class="container mt-5 p-5 max bd-black">
 	<div class="row">
-		<div class="col-md"><h3>Steven Spielberg</h3>
-			<p>Steven Allan Spielberg (18 de diciembre de 1946) es un director, guionista y productor de cine estadounidense.​ Se lo considera uno de los pioneros de la era del Nuevo Hollywood y es también uno de los directores más reconocidos y populares de la industria cinematográfica mundial.</p>
+		<div class="col-md-8">
+      <h5 class="mt-2">Director</h5>
+      <h3 class="mt-2 director">Steven Spielberg</h3>
+			<p class="txtdirector">Steven Allan Spielberg (18 de diciembre de 1946) es un director, guionista y productor de cine estadounidense.​ Se lo considera uno de los pioneros de la era del Nuevo Hollywood y es también uno de los directores más reconocidos y populares de la industria cinematográfica mundial.</p>
 		</div>
-		<div class="col-md">
-			<img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg" class="img-fluid" alt="Sinopsis">
+		<div class="col-md-4">
+			<img src="https://www.themoviedb.org/t/p/w300_and_h450_bestv2/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg" class="rounded-circle ftdirector" alt="Director">
 		</div>
   </div>
 	</div>
@@ -266,18 +313,18 @@
 
 <!-- ficha técnica -->
 
-	<section class="bg-dark text-light p-5 mt-5">
+	<section class="bg-light text-dark p-5 mt-5">
   <div class="container margen mt-5">
-	<div class="row actores">
+	<div class="row datos">
 		<div class="col datos"><p class="h6 text-center">Año de estreno</p>
-			<p class="h3 text-center">1998</p>
+			<p class="h3 text-center fecha">1998</p>
 		</div>
 		<div class="col datos">
-			<p class="h6 text-center">Guión</p>
-			<p class="h3 text-center">Robert Rodat</p>
+			<p class="h6 text-center">Recaudacion</p>
+			<p class="h3 text-center recaudacion">Robert Rodat</p>
 		</div>
-		<div class="col datos"><p class="h6 text-center">Música</p>
-			<p class="h3 text-center">John Williams</p>
+		<div class="col datos"><p class="h6 text-center">Valoración</p>
+			<p class="h3 text-center votacion">John Williams</p>
 		</div>
 	</div>
   </div>
@@ -291,7 +338,7 @@
 	<div class="container">
 		<h2 class="text-center">Trailer</h2>
 		<div class="ratio ratio-16x9">
-			<iframe src="https://www.youtube.com/embed/S1Qj_AVu2pA" title="YouTube video" allowfullscreen></iframe>
+			<iframe src="https://www.youtube.com/embed/S1Qj_AVu2pA" title="YouTube video" allowfullscreen class="trailer"></iframe>
 		</div>
 	</div>
 	</section>
@@ -308,7 +355,7 @@
     <p class="float-end mb-1 text-light">
       <a href="#">Volver arriba</a>
     </p>
-    <p class="h2 text-light">Popcorn</p>
+    <p class="h2 text-light">CINEACCION</p>
     <p class="mb-0 text-light">Un proyecto <a href="https://periodismoudec.cl">Periodismo UdeC</a>.</p>
   </div>
 </footer>
